@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IoT 溫濕度監控</title>
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>IoT 溫濕度監控系統</h1>
+        
+        <div class="data-input">
+            <h2>新增數據</h2>
+            <form id="tempForm">
+                <input type="text" id="temp" placeholder="溫度" required>
+                <input type="text" id="humi" placeholder="濕度" required>
+                <button type="submit">提交</button>
+            </form>
+        </div>
+
+        <div class="data-display">
+            <h2>歷史數據</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>時間</th>
+                        <th>溫度</th>
+                        <th>濕度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td>{{ record.time }}</td>
+                        <td>{{ record.temp }}°C</td>
+                        <td>{{ record.humi }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('tempForm').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const temp = document.getElementById('temp').value;
+            const humi = document.getElementById('humi').value;
+            
+            await fetch('/api/temp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ temp, humi })
+            });
+            
+            window.location.reload();
+        };
+    </script>
+</body>
+</html> 
